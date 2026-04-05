@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/empty"
 import { Spinner } from "@/components/ui/spinner"
 
-export default function Loader() {
+export default function Loader({setLoading, onCancel}) {
   return (
     <Empty className="w-full">
       <EmptyHeader>
@@ -22,7 +22,7 @@ export default function Loader() {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick = {onCancel}>
           Cancel
         </Button>
       </EmptyContent>

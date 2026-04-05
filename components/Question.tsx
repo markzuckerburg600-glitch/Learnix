@@ -4,7 +4,13 @@ import { QuestionMap } from "./QuizGeneratorServer"
 import { useState } from "react"
 import QuestionChoice from "./QuestionChoice"
 
-export default function Question(question: QuestionMap) {
+export default function Question(question: QuestionMap, setCorrectCount: () => void, setAnswered: () => void) {
+  const [clickedIndex, setClickedIndex] = useState<number | null>(null)
+  
+  const handleChoiceClick = (index: number) => {
+    console.log('Clicked choice index:', index, 'Correct answer:', question.correct)
+    setClickedIndex(index)
+  }
   return (
     <div className="w-full max-w-3xl mx-auto">
       <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 shadow-xl border border-blue-100">
@@ -16,7 +22,15 @@ export default function Question(question: QuestionMap) {
           {question.choices.map((choice, i: number) => {
               return(
                   <Fragment key = {i}>
-                  <QuestionChoice correct = {question.correct} choice = {choice} i = {i} />
+                  <QuestionChoice 
+                    setCorrectCount = {setCorrectCount}
+                    setAnswered = {setAnswered}
+                    correct = {question.correct} 
+                    choice = {choice} 
+                    i = {i} 
+                    clickedIndex = {clickedIndex}
+                    onClick = {() => handleChoiceClick(i)}
+                  />
                   </Fragment>
               )
           })}

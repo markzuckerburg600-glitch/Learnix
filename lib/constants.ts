@@ -1,0 +1,1 @@
+export const description = "Hello, my name is Ryan and I'm currently a junior"
