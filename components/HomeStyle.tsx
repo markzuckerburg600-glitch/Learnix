@@ -1,10 +1,14 @@
 "use client"
+import Image from "next/image"
 import { motion } from "motion/react"
 import { Button } from "./ui/button"
-import { Circle, Sparkles, ArrowRight, Zap, BookOpen, Brain } from "lucide-react"
+import { TypeAnimation } from "react-type-animation"
+import { Sparkles, ArrowRight, Zap, BookOpen, Brain } from "lucide-react"
 import Card from "./ui/styledWrapper"
 import Help from "./Help"
 import GridReview from "./GridReview"
+import Me from "@/public/Me.png"
+import { description } from "@/lib/constants"
 
 export default function HomeStyle() {
 
@@ -20,11 +24,11 @@ export default function HomeStyle() {
     { num: 3, title: "Study Smart", desc: "Enjoy personalized quizzes, videos, and flashcards", emoji: "🎯" },
   ]
 
-  const userReviews  = [
-    {desc: "Absolutely Amazing!", by: "Brain Lin"},
-    {desc:"Great for studying. I used this everyday to pass my classes", by: "James Johnson"},
-    {desc: "The quizzes and videos are unlike anything I've seen. It's so in-depth and comprehensive", by: "Alice Smith"},
-    {desc: "I use this for all my classes", by: "Bob Ryder"},
+  const userReviews = [
+    { desc: "Absolutely Amazing!", by: "Brain Lin" },
+    { desc: "Great for studying. I used this everyday to pass my classes", by: "James Johnson" },
+    { desc: "The quizzes and videos are unlike anything I've seen. It's so in-depth and comprehensive", by: "Alice Smith" },
+    { desc: "I use this for all my classes", by: "Bob Ryder" },
   ]
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 overflow-hidden">
@@ -68,7 +72,7 @@ export default function HomeStyle() {
                   </h1>
                 </motion.div>
               </div>
-              <motion.p 
+              <motion.p
                 className="text-xl sm:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -227,6 +231,33 @@ export default function HomeStyle() {
             </div>
           </div>
         </section>
+        <div className="font-bold flex justify-center align-middle text-5xl bg-gradient-to-r from-purple-600 to to-pink-600 bg-clip-text text-transparent">
+          Meet the Creator
+        </div>
+        <section className="flex justify-center align-middle text-gray-700">
+          <div className="mt-10 text-2xl">
+            <TypeAnimation
+              sequence={[
+                "I am Ryan",
+                2000,
+                "I love AI",
+                2000,
+                "I love science",
+                2000,
+                "I love learning",
+                2000,
+              ]}
+              speed={30}
+              repeat={Infinity}
+            />
+          </div>
+        </section>
+        <div className="flex justify-center align-middle mt-10">
+          <div className="grid grid-cols-2 gap-2">
+            <Image src={Me} alt="A photo of me" height={240} width={300} />
+            <div> {description}</div>
+          </div>
+        </div>
         {/* FAQ Section */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-100/50 to-purple-100/50">
           <div className="max-w-4xl mx-auto">
@@ -243,9 +274,9 @@ export default function HomeStyle() {
               <p className="text-xl text-gray-600">
                 Everything you need to know about Learnix
               </p>
-              <div className = "flex justify-center items-center ">
-             <Help />
-             </div>
+              <div className="flex justify-center items-center ">
+                <Help />
+              </div>
             </motion.div>
           </div>
         </section>

@@ -1,10 +1,12 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { Fragment, useState, useRef } from "react";
 import puter from "@heyputer/puter.js";
 import QuizButton from "./ui/quizButton";
 import Question from "./Question";
 import Loader from "./Loading";
+import SummaryPanel from "./SummaryPanel";
+import { QuestionContext } from "@/lib/context";
 
 export interface QuestionMap {
     questionText: string,
@@ -16,12 +18,15 @@ export interface QuestionMap {
 
 export default function QuizGeneratorServer() {
   const [prompt, setPrompt] = useState("");
-  const [response, setResponse] = useState(null);
+  const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [quizData, setQuizData] = useState<QuestionMap[] | null>(null);
   const [numQuestions, setNumQuestions] = useState<number>(10)
   const [difficulty, setDifficulty] = useState("medium")
+  const [correctCount, setCorrectCount] = useState<number>(0)
+  const [answered, setAnswered] = useState(0)
+  const isCancelledRef = useRef<boolean>(false)
 
   const range = Array.from({ length: 49 }, (_, i) => i + 1)
 
@@ -55,10 +60,11 @@ export default function QuizGeneratorServer() {
   }
 
   const systemPrompt = `You are an expert MCQ quiz generator.
-CRITICAL: You must ONLY return a valid JSON array. No extra text, no explanations, no markdown formatting.
-Make sure the correct answer is between 1-4, just like the choices
-MAKE SURE YOU CREATE ${numQuestions} mcq's
-The user wants a difficulty of ${difficulty}
+CRITICAL: You must ONLY return a valid JSON array. No extra text, no markdown formatting.
+HERE ARE THE USERS REQUIREMENTS:
+The correct answer is between 1-4, just like the choices.
+${numQuestions} MCQ'S
+A difficulty of ${difficulty}
 Format:
 [
   {
@@ -80,10 +86,16 @@ Example:
     "explaination": "2+2 equals 4"
   }
 ]`
+  const cancelRequest = () => {
+    setLoading(false);
+    isCancelledRef.current = true;
+  };
+
   async function handleAsk() {
     if (!prompt.trim()) return;
     setLoading(true);
     setResponse("");
+    isCancelledRef.current = false;
 
     try {
       const reply = await puter.ai.chat([
@@ -95,17 +107,30 @@ Example:
             role: "user",
             content: prompt
         } 
-    ], { model: "gpt-5.4-nano"});
+    ], {
+       model: "gpt-5.4-nano",
+       tools: [{type: "web_search"}]
+     }
+  );
+      
+      // Check if request was cancelled while waiting
+      if (isCancelledRef.current) {
+        return; // Exit early if cancelled
+      }
+      
       const text = reply.message?.content.toString() || "";
       const parsed = JSON.parse(text);
       setQuizData(parsed);
       setResponse(text);
       setCurrentQuestionIndex(0);
-    } catch (err) {
+    } catch (err: unknown) {
+      if (isCancelledRef.current) return; // Don't show error if cancelled
+      
       setResponse("Something went wrong. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
+      isCancelledRef.current = false;
     }
   }
 
@@ -152,7 +177,12 @@ Example:
     : ""
     }
         {loading ? 
-        <Loader/> :
+        <>
+        <Loader
+        setLoading = {setLoading}
+        onCancel = {cancelRequest}
+        /> 
+        </>:
         <>
         {!quizData ? (
         <div>
@@ -164,13 +194,16 @@ Example:
                   return (
                 <Fragment key = {index}>
                 <div>
+                  <QuestionContext.Provider value = {{setCorrectCount, setAnswered}}>
                   <Question {...questionData}/>
+                  </QuestionContext.Provider>
                 </div>
                 </Fragment>
                   )
                 }) : ""
               } catch (error) {
-                return <div>JSON Error: {error instanceof Error ? error.message : 'Invalid JSON'}</div>
+                console.log(error)
+                return 
               }
             })()}
           </div>
@@ -179,7 +212,10 @@ Example:
         <div className="mt-6">
           <div className="flex justify-between items-center mb-6">
             <div className="text-sm text-gray-600 font-medium">
-              Question {currentQuestionIndex + 1} of {quizData.length}
+              {currentQuestionIndex < quizData.length ? 
+                `Question ${currentQuestionIndex + 1} of ${quizData.length}` : 
+                'Quiz Summary'
+              }
             </div>
             <button
               onClick={() => {
@@ -194,7 +230,13 @@ Example:
             </button>
           </div>
           {/* Do the question at the current index */}
-          <Question {...quizData[currentQuestionIndex]} />
+          {
+          currentQuestionIndex < quizData.length ?
+          <QuestionContext.Provider value = {{setCorrectCount, setAnswered}}>
+          <Question key={quizData[currentQuestionIndex].questionText} {...quizData[currentQuestionIndex]} />
+          </QuestionContext.Provider>
+          :  <SummaryPanel correctCount = {correctCount} answered = {answered}/>
+          }
           
           <div className="flex justify-center gap-4 mt-8">
             <button
@@ -206,11 +248,14 @@ Example:
             </button>
             
             <button
-              onClick={() => setCurrentQuestionIndex(Math.min(quizData.length - 1, currentQuestionIndex + 1))}
-              disabled={currentQuestionIndex === quizData.length - 1}
+              onClick={() => setCurrentQuestionIndex(Math.min(quizData.length, currentQuestionIndex + 1))}
+              disabled={currentQuestionIndex > quizData.length - 1}
               className="px-6 py-3 bg-blue-500 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-blue-600 transition-all duration-200 font-medium shadow-lg"
             >
-              Next →
+             {currentQuestionIndex !== quizData.length-1 ? 
+             <div> Next → </div> : 
+             <div> Summary → </div>
+             }
             </button>
           </div>
         </div>
