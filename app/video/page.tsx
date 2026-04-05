@@ -1,11 +1,11 @@
+import FileAcceptor from "@/components/FileAcceptor"
+
 export default function page() {
    
   return (
     <>
-    <div>
-      <button>
-
-      </button>
+    <div className = "mt-30">
+      <FileAcceptor/>
     </div>
     </>
   )

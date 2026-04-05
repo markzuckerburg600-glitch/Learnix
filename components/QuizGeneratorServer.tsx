@@ -6,6 +6,7 @@ import QuizButton from "./ui/quizButton";
 import Question from "./Question";
 import Loader from "./Loading";
 import SummaryPanel from "./SummaryPanel";
+import { QuestionContext } from "@/lib/context";
 
 export interface QuestionMap {
     questionText: string,
@@ -193,7 +194,9 @@ Example:
                   return (
                 <Fragment key = {index}>
                 <div>
-                  <Question {...questionData} setCorrectCount = {setCorrectCount} setAnswered = {setAnswered}/>
+                  <QuestionContext.Provider value = {{setCorrectCount, setAnswered}}>
+                  <Question {...questionData}/>
+                  </QuestionContext.Provider>
                 </div>
                 </Fragment>
                   )
@@ -229,7 +232,9 @@ Example:
           {/* Do the question at the current index */}
           {
           currentQuestionIndex < quizData.length ?
+          <QuestionContext.Provider value = {{setCorrectCount, setAnswered}}>
           <Question key={quizData[currentQuestionIndex].questionText} {...quizData[currentQuestionIndex]} />
+          </QuestionContext.Provider>
           :  <SummaryPanel correctCount = {correctCount} answered = {answered}/>
           }
           

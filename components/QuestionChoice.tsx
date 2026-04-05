@@ -1,8 +1,9 @@
 "use client"
+import { useQuestionContext } from "@/lib/context"
 import { Fragment } from "react"
+
 export default function QuestionChoice(
-    { setCorrectCount, 
-        setAnswered, 
+    { 
         correct,     
         choice, 
         i, 
@@ -10,8 +11,6 @@ export default function QuestionChoice(
         onClick
      }: 
      { 
-        setCorrectCount: () => void, 
-        setAnswered: () => void, 
         correct: number, 
         choice: string, 
         i: number, 
@@ -19,6 +18,7 @@ export default function QuestionChoice(
         onClick: () => void 
     }) {
     console.log('QuestionChoice props:', { correct, choice, i, clickedIndex })
+    const [setCorrectCount, setAnswer] = useQuestionContext()
     
     const handleChoiceClick = () => {
         if (clickedIndex === null) {  // Only count first click

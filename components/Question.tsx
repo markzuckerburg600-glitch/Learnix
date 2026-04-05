@@ -4,7 +4,12 @@ import { QuestionMap } from "./QuizGeneratorServer"
 import { useState } from "react"
 import QuestionChoice from "./QuestionChoice"
 
-export default function Question(question: QuestionMap, setCorrectCount: () => void, setAnswered: () => void) {
+export interface QuestionChoiceProps {
+  setCorrectCount: () => void, 
+  setAnswered: () => void,
+}
+
+export default function Question(question: QuestionMap) {
   const [clickedIndex, setClickedIndex] = useState<number | null>(null)
   
   const handleChoiceClick = (index: number) => {
@@ -23,8 +28,6 @@ export default function Question(question: QuestionMap, setCorrectCount: () => v
               return(
                   <Fragment key = {i}>
                   <QuestionChoice 
-                    setCorrectCount = {setCorrectCount}
-                    setAnswered = {setAnswered}
                     correct = {question.correct} 
                     choice = {choice} 
                     i = {i} 
