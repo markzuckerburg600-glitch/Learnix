@@ -17,8 +17,7 @@ export default function QuestionChoice(
         clickedIndex: number | null, 
         onClick: () => void 
     }) {
-    console.log('QuestionChoice props:', { correct, choice, i, clickedIndex })
-    const [setCorrectCount, setAnswer] = useQuestionContext()
+    const [setCorrectCount, setAnswered] = useQuestionContext()
     
     const handleChoiceClick = () => {
         if (clickedIndex === null) {  // Only count first click

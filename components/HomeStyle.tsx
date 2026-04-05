@@ -231,10 +231,10 @@ export default function HomeStyle() {
             </div>
           </div>
         </section>
-        <div className="font-bold flex justify-center align-middle text-5xl bg-gradient-to-r from-purple-600 to to-pink-600 bg-clip-text text-transparent">
+        <div className="font-bold flex justify-center items-center text-5xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           Meet the Creator
         </div>
-        <section className="flex justify-center align-middle text-gray-700">
+        <section className="flex justify-center items-center text-gray-700">
           <div className="mt-10 text-2xl">
             <TypeAnimation
               sequence={[
@@ -252,7 +252,7 @@ export default function HomeStyle() {
             />
           </div>
         </section>
-        <div className="flex justify-center align-middle mt-10">
+        <div className="flex justify-center items-center mt-10">
           <div className="grid grid-cols-2 gap-2">
             <Image src={Me} alt="A photo of me" height={240} width={300} />
             <div> {description}</div>

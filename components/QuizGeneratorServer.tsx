@@ -130,7 +130,6 @@ Example:
       console.error(err);
     } finally {
       setLoading(false);
-      isCancelledRef.current = false;
     }
   }
 
@@ -179,7 +178,6 @@ Example:
         {loading ? 
         <>
         <Loader
-        setLoading = {setLoading}
         onCancel = {cancelRequest}
         /> 
         </>:

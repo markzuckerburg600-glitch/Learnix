@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/empty"
 import { Spinner } from "@/components/ui/spinner"
 
-export default function Loader({setLoading, onCancel}) {
+interface LoaderProps {
+  onCancel?: () => void;
+}
+
+export default function Loader({ onCancel }: LoaderProps) {
   return (
     <Empty className="w-full">
       <EmptyHeader>
