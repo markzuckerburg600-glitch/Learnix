@@ -1,11 +1,13 @@
 "use client";
 
 import { Fragment, useState, useRef } from "react";
+import { useDebounce } from "use-debounce"
 import puter from "@heyputer/puter.js";
 import QuizButton from "./ui/quizButton";
 import Question from "./Question";
 import Loader from "./Loading";
 import SummaryPanel from "./SummaryPanel";
+import FileAcceptor from "./FileAcceptor";
 import { QuestionContext } from "@/lib/context";
 
 export interface QuestionMap {
@@ -25,8 +27,14 @@ export default function QuizGeneratorServer() {
   const [numQuestions, setNumQuestions] = useState<number>(10)
   const [difficulty, setDifficulty] = useState("medium")
   const [correctCount, setCorrectCount] = useState<number>(0)
-  const [answered, setAnswered] = useState(0)
+  const [answered, setAnswered] = useState<number>(0)
+  const [includeKey, setIncludeKey] = useState<boolean>(false)
+  const [includeSimpleKey, setIncludeSimpleKey] = useState<boolean>(false)
+  const [title, setTitle] = useState<string>("")
+  const [header, setHeader] = useState<string>("")
   const isCancelledRef = useRef<boolean>(false)
+  const [debouncedTitle] = useDebounce(title, 500)
+  const [debouncedHeader] = useDebounce(header, 500)
 
   const range = Array.from({ length: 49 }, (_, i) => i + 1)
 
@@ -260,6 +268,83 @@ Example:
         )}
         </>
         }
+      {quizData && 
+      <>
+      <div className="flex flex-col justify-center items-center mt-20 space-y-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-border p-8 max-w-md w-full mx-4">
+          <h3 className="text-xl font-semibold text-foreground mb-6 text-center">
+            📄 Download a PDF of the quiz
+          </h3>
+          
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="quiz-title" className="text-sm font-medium text-foreground">
+                Quiz Header
+              </label>
+              <input 
+                id="quiz-title"
+                placeholder="Enter quiz title..." 
+                type="text" 
+                onChange={(e) => setHeader(e.target.value)} 
+                
+                value={header}
+                className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200"
+              />
+            </div>
+
+             <div className="space-y-2">
+              <label htmlFor="quiz-title" className="text-sm font-medium text-foreground">
+                Quiz Title
+              </label>
+              <input 
+                id="quiz-title"
+                placeholder="Enter quiz title..." 
+                type="text" 
+                onChange={(e) => setTitle(e.target.value)} 
+                
+                value={title}
+                className="w-full px-3 py-2 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all duration-200"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground">
+                Export Options
+              </label>
+              
+              <div className="flex items-center space-x-3 p-3 rounded-lg border border-input hover:bg-muted/50 transition-colors duration-200">
+                <input 
+                  type="checkbox" 
+                  id="include-key"
+                  checked={includeKey}
+                  onChange={() => setIncludeKey(!includeKey)}
+                  className="w-4 h-4 text-primary bg-background border-input rounded focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all duration-200"
+                />
+                <label htmlFor="include-key" className="text-sm text-foreground cursor-pointer select-none">
+                  Include detailed answer key
+                </label>
+              </div>
+
+              <div className="flex items-center space-x-3 p-3 rounded-lg border border-input hover:bg-muted/50 transition-colors duration-200">
+                <input 
+                  type="checkbox" 
+                  id="include-simple-key"
+                  checked={includeSimpleKey}
+                  onChange={() => setIncludeSimpleKey(!includeSimpleKey)}
+                  className="w-4 h-4 text-primary bg-background border-input rounded focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all duration-200"
+                />
+                <label htmlFor="include-simple-key" className="text-sm text-foreground cursor-pointer select-none">
+                  Include simple answer key
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <FileAcceptor quizData={quizData} includeKey={includeKey} includeSimpleKey={includeSimpleKey} title={debouncedTitle} header = {debouncedHeader}/>
+      </div>
+      </>
+      }
     </div>
   );
 }
