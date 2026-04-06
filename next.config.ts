@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: true,
     optimizePackageImports: ["",],
     optimizeServerReact: true,
+    serverActions: {
+      bodySizeLimit: "100mb"
+    }
   },
   turbopack: {
     root: __dirname,

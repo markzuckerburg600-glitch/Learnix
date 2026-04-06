@@ -2,10 +2,22 @@
 
 import { Fragment, useState } from "react"
 import { Page, Text, View, Document, StyleSheet, PDFViewer } from "@react-pdf/renderer"
-import { QuestionMap } from "./QuizGeneratorServer"
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
-export default function FileAcceptor({ quizData, includeKey, includeSimpleKey, title, header }) {
+import QuestionMap from "./QuizGeneratorServer"
+export default function FileAcceptor(
+  { quizData, 
+    includeKey, 
+    includeSimpleKey, 
+    title, 
+    header }: 
+    { 
+    quizData: QuestionMap, 
+    includeKey: boolean, 
+    includeSimpleKey: boolean, 
+    title: string, 
+    header:string }) 
+  {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   const styles = StyleSheet.create({
@@ -76,7 +88,7 @@ export default function FileAcceptor({ quizData, includeKey, includeSimpleKey, t
   return (
     <>
       {/* Normal Mode */}
-      {!isFullscreen && (
+      {(!isFullscreen && quizData) && (
         <div className={cn(
           "w-full h-screen bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800",
           "border border-border rounded-lg shadow-lg overflow-hidden",

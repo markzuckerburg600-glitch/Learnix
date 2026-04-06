@@ -8,9 +8,10 @@ import Question from "./Question";
 import Loader from "./Loading";
 import SummaryPanel from "./SummaryPanel";
 import FileAcceptor from "./FileAcceptor";
+import UploadFile from "./UploadFile";
 import { QuestionContext } from "@/lib/context";
 
-export interface QuestionMap {
+export default interface QuestionMap {
     questionText: string,
     choices: [string],
     hint: string,
@@ -19,7 +20,8 @@ export interface QuestionMap {
 }
 
 export default function QuizGeneratorServer() {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState<string>("");
+  const [sources, setSources] = useState<string[]>([])
   const [response, setResponse] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -67,7 +69,7 @@ export default function QuizGeneratorServer() {
     )
   }
 
-  const systemPrompt = `You are an expert MCQ quiz generator.
+  let systemPrompt = `You are an expert MCQ quiz generator.
 CRITICAL: You must ONLY return a valid JSON array. No extra text, no markdown formatting.
 HERE ARE THE USERS REQUIREMENTS:
 The correct answer is between 1-4, just like the choices.
@@ -93,7 +95,11 @@ Example:
     "correct": 1,
     "explaination": "2+2 equals 4"
   }
-]`
+]
+
+HERE ARE THE USERS SOURCES
+MAKE SURE THE QUESTIONS ARE RELATING TO THESE
+`
   const cancelRequest = () => {
     setLoading(false);
     isCancelledRef.current = true;
@@ -104,6 +110,7 @@ Example:
     setLoading(true);
     setResponse("");
     isCancelledRef.current = false;
+    systemPrompt += sources.join(", ")
 
     try {
       const reply = await puter.ai.chat([
@@ -144,8 +151,8 @@ Example:
   return (
     <div>
     {(!quizData && !loading)?
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6">
+    <div className="w-full">
+      <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-6 flex flex-col justify-center items-center">
         <label className="block text-sm font-medium text-gray-700 mb-2">
           What would you like to create a quiz about?
         </label>
@@ -157,6 +164,12 @@ Example:
           placeholder="e.g., 'Create a quiz about World War II', 'Make a chemistry quiz about atoms', 'Generate questions about Python programming'..."
           onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleAsk()}
         />
+        {/* Adding sources using dropzone */}
+        <div className = "p-2 flex flex-col justify-center items-center mt-5 mb-2">
+        <p className = "mb-5">Add sources </p>
+        <UploadFile sources = {sources} setSources = {setSources}/>
+        </div>
+        {/* Select questions */}
         <div className="mt-4 space-y-4">
           <div className="flex items-center gap-4">
             <span className="text-sm font-medium text-gray-700">Number of questions:</span>
