@@ -7,8 +7,6 @@ const isPublicRoute = createRouteMatcher([
 ])
 
 export default clerkMiddleware(async (auth, req) => {
-  console.log('Middleware running for:', req.nextUrl.pathname)
-  console.log('Is public route:', isPublicRoute(req))
   if (isPublicRoute(req)) {
     return
   }

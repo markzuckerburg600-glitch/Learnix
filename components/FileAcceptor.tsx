@@ -1,18 +1,18 @@
 "use client"
-
 import { Fragment, useState } from "react"
 import { Page, Text, View, Document, StyleSheet, PDFViewer } from "@react-pdf/renderer"
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
-import QuestionMap from "./QuizGeneratorServer"
+import QuizGeneratorServer, { QuestionMap } from "./QuizGeneratorServer"
 export default function FileAcceptor(
+  // Creates pdf and pdf viewer for downloading the quiz 
   { quizData, 
     includeKey, 
     includeSimpleKey, 
     title, 
     header }: 
     { 
-    quizData: QuestionMap, 
+    quizData: QuestionMap[] | null, 
     includeKey: boolean, 
     includeSimpleKey: boolean, 
     title: string, 
@@ -29,12 +29,6 @@ export default function FileAcceptor(
     questionContainer: {
       marginBottom: 20,
       paddingBottom: 15,
-      borderBottom: "1 solid #E0E0E0"
-    },
-    questionNumber: {
-      fontSize: 12,
-      fontWeight: "bold",
-      marginBottom: 8
     },
     questionText: {
       fontSize: 14,
@@ -58,7 +52,6 @@ export default function FileAcceptor(
     simpleCorrectChoice: {
       fontSize: 12,
       marginBottom: 6,
-      fontWeight: "bold",
     },
     reasoning: {
       fontSize: 12,
@@ -85,6 +78,13 @@ export default function FileAcceptor(
       borderBottom: "2 solid #E0E0E0",
     },
 })
+
+  const choiceMappings = {
+    1: " A",
+    2: " B",
+    3: " C",
+    4: " D",
+  }
   return (
     <>
       {/* Normal Mode */}
@@ -133,11 +133,8 @@ export default function FileAcceptor(
                   {quizData.map((question: QuestionMap, index: number) => {
                     return (
                       <View key={index} style={styles.questionContainer}>
-                        <Text style={styles.questionNumber}>
-                          Question {index + 1}
-                        </Text>
                         <Text style={styles.questionText}>
-                          {question.questionText}
+                          {index+1}. {question.questionText}
                         </Text>
                         <View style={styles.choicesContainer}>
                           {question.choices.map((choice, i: number) => 
@@ -158,11 +155,8 @@ export default function FileAcceptor(
                   {quizData.map((question: QuestionMap, index: number) => {
                     return (
                       <View key={index} style={styles.questionContainer}>
-                        <Text style={styles.questionNumber}>
-                          Question {index + 1}
-                        </Text>
                         <Text style={styles.questionText}>
-                          {question.questionText}
+                         {index+1}. {question.questionText}
                         </Text>
                         <View style={styles.choicesContainer}>
                           {question.choices.map((choice, i: number) => 
@@ -172,7 +166,7 @@ export default function FileAcceptor(
                               </Text>
                             </Fragment>
                           )}
-                          <Text style={styles.reasoning}> Reasoning: {question.explaination}</Text>
+                          <Text style={styles.reasoning}> Explaination: {question.explaination}</Text>
                         </View>
                       </View>
                     )
@@ -189,7 +183,7 @@ export default function FileAcceptor(
                         <Text style={styles.choice}>
                           {index + 1}.
                           <Text style={styles.simpleCorrectChoice}>
-                           {question.correct}
+                           {choiceMappings[question.correct]}
                            </Text>
                         </Text>
                         </View>
@@ -245,11 +239,8 @@ export default function FileAcceptor(
                   {quizData.map((question: QuestionMap, index: number) => {
                     return (
                       <View key={index} style={styles.questionContainer}>
-                        <Text style={styles.questionNumber}>
-                          Question {index + 1}
-                        </Text>
                         <Text style={styles.questionText}>
-                          {question.questionText}
+                          {index + 1}. {question.questionText}
                         </Text>
                         <View style={styles.choicesContainer}>
                           {question.choices.map((choice, i: number) => 
@@ -263,18 +254,15 @@ export default function FileAcceptor(
                       </View>
                     )
                   })}
-                  {/* Answer key */}
+                  {/* Answer key w explainations */}
                   {includeKey && 
                   <>
                   <Text style={styles.title}> Answer Key </Text>
                   {quizData.map((question: QuestionMap, index: number) => {
                     return (
                       <View key={index} style={styles.questionContainer}>
-                        <Text style={styles.questionNumber}>
-                          Question {index + 1}
-                        </Text>
                         <Text style={styles.questionText}>
-                          {question.questionText}
+                         {index+1}. {question.questionText}
                         </Text>
                         <View style={styles.choicesContainer}>
                           {question.choices.map((choice, i: number) => 
@@ -284,13 +272,14 @@ export default function FileAcceptor(
                               </Text>
                             </Fragment>
                           )}
-                          <Text style={styles.reasoning}> Reasoning: {question.explaination}</Text>
+                          <Text style={styles.reasoning}> Explaination: {question.explaination}</Text>
                         </View>
                       </View>
                     )
                   })}
                   </>
                   }
+                  {/* Simple answer key */}
                   {includeSimpleKey && 
                   <>
                   <Text style={styles.title}> </Text>
@@ -301,7 +290,7 @@ export default function FileAcceptor(
                         <Text style={styles.choice}>
                           {index + 1}.
                           <Text style={styles.simpleCorrectChoice}>
-                           {question.correct}
+                           {choiceMappings[question.correct as keyof typeof choiceMappings]}
                            </Text>
                         </Text>
                         </View>
