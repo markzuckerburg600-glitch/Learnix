@@ -1,13 +1,17 @@
 import { createContext } from "react";
 import { useContext } from "react";
-import { QuestionChoiceProps } from "@/components/QuestionChoice";
 
-export const QuestionContext = createContext<QuestionChoiceProps | undefined>(undefined)
+interface QuestionContextType {
+  setCorrectCount: (value: number | ((prev: number) => number)) => void;
+  setAnswered: (value: number | ((prev: number) => number)) => void;
+}
+
+export const QuestionContext = createContext<QuestionContextType | undefined>(undefined)
 
 export function useQuestionContext() {
-    const {setCorrectCount, setAnswered} = useContext(QuestionContext)
-    if (setCorrectCount === undefined || setAnswered === undefined) {
-        throw new Error("useQuestionContext must be used with a QuestionContext")
+    const ctx = useContext(QuestionContext);
+    if (ctx === undefined) {
+        throw new Error("useQuestionContext must be used within a QuestionContext.Provider")
     }
-    return [setCorrectCount, setAnswered]
+    return [ctx.setCorrectCount, ctx.setAnswered] as const;
 }

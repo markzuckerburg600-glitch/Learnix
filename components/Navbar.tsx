@@ -43,10 +43,16 @@ export default function Navbar() {
 
         <div className="flex items-center gap-4">
           <Show when="signed-out">
-            <SignUpButton mode="modal">
+            <SignUpButton
+              fallbackRedirectUrl="/dashboard"
+              forceRedirectUrl="/dashboard"
+            >
               <button className="font-semibold hover:text-gray-700">Sign Up</button>
             </SignUpButton>
-            <SignInButton mode="modal">
+            <SignInButton
+              fallbackRedirectUrl="/dashboard"
+              forceRedirectUrl="/dashboard"
+            >
               <button className="font-semibold hover:text-gray-700">Login</button>
             </SignInButton>
           </Show>

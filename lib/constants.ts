@@ -1,1 +1,1 @@
-export const description = "Hello, my name is Ryan and I'm currently a junior"
+export const description: string = "Hello, my name is Ryan and I'm currently a junior"
