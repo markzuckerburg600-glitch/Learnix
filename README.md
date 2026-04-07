@@ -15,7 +15,7 @@
     Entire Course Creation 
   </li>
   <li>
-    Maybe even more features in the feature...
+    Maybe even more features in the future...
   </li>
   </h4>
 </h2>
