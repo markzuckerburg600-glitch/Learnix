@@ -5,11 +5,10 @@ import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs"
 import Image from "next/image"
 import Logo from "@/public/Logo.png"
 
-export default function Navbar() {
+export default function OtherNavbar() {
   // Get that underline 
   const pathName = usePathname()
   const links = [
-    { label: "Dashboard", href: "/dashboard"},
     { label: "Study", href: "/study"},
     { label: "Quizzes", href: "/quiz"},
     { label: "Video", href: "/video"},
@@ -23,7 +22,7 @@ export default function Navbar() {
     >
       <nav className = "flex justify-between items-center">
         <div className = "flex items-center gap-4">
-          <Link href="/" className = "flex items-center gap-2">
+          <Link href="/dashboard" className = "flex items-center gap-2">
             <Image src = {Logo} alt = "Logo" height = {80} width = {80}/>
           </Link>
         </div>

@@ -19,8 +19,8 @@ export default function SummaryPanel({correctCount, answered}: {correctCount: nu
   const scoreMessage = getScoreMessage();
   
   return (
-    <div className="w-full max-w-2xl mx-auto animate-fade-in">
-      <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 text-center relative overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto animate-fade-in">
+      <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-5 pl-20 pr-20 shadow-2xl border border-white/20 text-center relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
         
@@ -72,13 +72,13 @@ export default function SummaryPanel({correctCount, answered}: {correctCount: nu
         <div className="flex gap-4 justify-center">
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
+            className="px-1 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             Try Another Quiz
           </button>
           <button
             onClick={() => window.print()}
-            className="px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300 font-medium shadow hover:shadow-lg transform hover:scale-105"
+            className="px-3 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all duration-300 font-medium shadow hover:shadow-lg transform hover:scale-105"
           >
             Print Results
           </button>

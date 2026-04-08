@@ -1,5 +1,5 @@
 "use client"
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 // Use react-dropzone for drap-n-drop
 // use react-pdftotext to extract text and put it to prompt
 import { useDropzone } from 'react-dropzone';
@@ -16,7 +16,13 @@ const dropzoneStyle = {
   backdropFilter: 'blur(10px)'
 };
 // Adds onto prompt based on the file the user sends
-export default function UploadFile({ sources, setSources }: { sources: string[], setSources: React.Dispatch<React.SetStateAction<string[]>> }) {
+export default function UploadFile(
+  { sources, 
+    setSources, 
+  }: { 
+    sources: string[], 
+    setSources: React.Dispatch<React.SetStateAction<string[]>>,
+  }) {
   const [files, setFiles] = useState<File[]>([])
 
   const onDrop = async (acceptedFiles: File[]) => {
@@ -123,6 +129,8 @@ export default function UploadFile({ sources, setSources }: { sources: string[],
         })}
       </div>
     )}
+    <div>
+    </div>
     </>
   );
 }
