@@ -200,6 +200,7 @@ export default function HomeStyle() {
             </div>
           </div>
         </section>
+        {/* Animation showing preview */}
         <HomeAnimationPreview/>
 
         {/* Testimonials Section */}

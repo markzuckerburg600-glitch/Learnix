@@ -3,7 +3,7 @@ import { Fragment, useState } from "react"
 import { Page, Text, View, Document, StyleSheet, PDFViewer } from "@react-pdf/renderer"
 import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
-import QuizGeneratorServer, { QuestionMap } from "./QuizGeneratorServer"
+import QuizGeneratorServer, { QuestionMap } from "./Quiz/QuizGeneratorServer"
 export default function FileAcceptor(
   // Creates pdf and pdf viewer for downloading the quiz 
   { quizData, 

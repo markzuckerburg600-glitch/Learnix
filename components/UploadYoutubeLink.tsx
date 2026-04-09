@@ -126,9 +126,11 @@ export default function UploadYoutubeLink({
                                             <Play className="w-3 h-3 text-red-500 shrink-0" />
                                             <h5 className="text-sm font-medium text-gray-800 truncate">{title}</h5>
                                         </div>
+                                        {linkSources[i] && 
                                         <p className="text-xs text-gray-600">
                                             Transcript: {linkSources[i].substring(0, 80)}...
                                         </p>
+                                        }
                                     </div>
                                     <button 
                                         onClick={() => {
