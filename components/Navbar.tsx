@@ -4,7 +4,11 @@ import { usePathname } from "next/navigation"
 import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs"
 import Image from "next/image"
 import Logo from "@/public/Logo.png"
+import gsap from "gsap"
+import { useGSAP } from "@gsap/react"
+import ScrollTrigger from "gsap/src/ScrollTrigger"
 
+gsap.registerPlugin(ScrollTrigger)
 export default function Navbar() {
   // Get that underline 
   const pathName = usePathname()
@@ -13,22 +17,41 @@ export default function Navbar() {
     { label: "Study", href: "/study"},
     { label: "Quizzes", href: "/quiz"},
     { label: "Video", href: "/video"},
-    { label: "Help",  href: "/help"},
+    { label: "Chatbot",  href: "/help"},
   ]
+
+  useGSAP(() => {
+    gsap.fromTo("#nav-background", {
+      backdropFilter: "blur(0px)",
+    }, {
+      backgroundColor: "rgba(255, 255, 255, 0.7)",
+      backdropFilter: "blur(30px)",
+      duration: 1,
+      opacity: 0.99,
+      ease: "power1.inOut",
+      scrollTrigger: {
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+      }
+    })
+  }, [])
 
   return (
     <>
-    <header className="w-full fixed z-50 bg-white p-3 transition-opacity duration-1000 ease-in-out"
+    <header id = "nav" className="w-full fixed z-50 p-3 transition-opacity duration-1000 ease-in-out" 
     style={{ opacity: 1 }}
     >
-      <nav className = "flex justify-between items-center">
+      <div id="nav-background" className="absolute inset-0 -z-10 bg-white" />
+      <nav className = "flex justify-between items-center relative">
         <div className = "flex items-center gap-4">
           <Link href="/" className = "flex items-center gap-2">
             <Image src = {Logo} alt = "Logo" height = {80} width = {80}/>
           </Link>
         </div>
         
-        <ul className = "flex flex-row justify-center items-center list-none gap-8">
+        <ul className = "flex flex-row justify-center items-center list-none gap-7">
         {links.map((value, index) => {
           // Put underline if pathName matches the specific navbar li
           const isActive = pathName === value.href 

@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     turbopackFileSystemCacheForBuild: true,
     turbopackFileSystemCacheForDev: true,
-    optimizePackageImports: ["",],
+    optimizePackageImports: ["gsap", "@gsap/react"],
     optimizeServerReact: true,
     serverActions: {
       bodySizeLimit: "100mb"

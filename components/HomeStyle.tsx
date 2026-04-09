@@ -3,12 +3,16 @@ import Image from "next/image"
 import { motion } from "motion/react"
 import { Button } from "./ui/button"
 import { TypeAnimation } from "react-type-animation"
-import { Sparkles, ArrowRight, Zap, BookOpen, Brain } from "lucide-react"
+import { Sparkles, ArrowRight, Zap, BookOpen, Brain, Home } from "lucide-react"
 import Card from "./ui/styledWrapper"
 import Help from "./Help"
 import GridReview from "./GridReview"
 import Me from "@/public/Me.png"
 import { description } from "@/lib/constants"
+import HomeAnimationPreview from "./HomeAnimationPreview"
+import dynamic from "next/dynamic"
+// Stop hydration errors 
+const InfiniteScroll = dynamic(() => import("./InfiniteScroll"), { ssr: false })
 
 export default function HomeStyle() {
 
@@ -196,6 +200,7 @@ export default function HomeStyle() {
             </div>
           </div>
         </section>
+        <HomeAnimationPreview/>
 
         {/* Testimonials Section */}
         <section className="py-20 px-4 sm:px-6 lg:px-8">
@@ -231,7 +236,11 @@ export default function HomeStyle() {
             </div>
           </div>
         </section>
-        <div className="font-bold flex justify-center items-center text-5xl bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+      {/* Infinite scroll */}
+        <InfiniteScroll/>
+
+        {/* My bio */}
+        <div className="mt-30 font-bold flex justify-center items-center text-5xl bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
           Meet the Creator
         </div>
         <section className="flex justify-center items-center text-gray-700">
