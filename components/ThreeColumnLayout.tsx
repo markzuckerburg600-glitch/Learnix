@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable"
-import Chatbot from "./Chatbot"
+import Chatbot from "./Chatbot/Chatbot"
 import UploadFile from "./FileUploads/UploadFile"
 import UploadYoutubeLink from "./FileUploads/UploadYoutubeLink"
 

@@ -11,7 +11,7 @@ import UploadPdfPopup from "../FileUploads/UploadPdfPopup";
 import UploadYoutubePopup from "../FileUploads/UploadYoutubePopup";
 import QuizGeneratorPopup from "./QuizGeneratorPopup";
 import { QuestionContext } from "@/lib/context";
-import Chatbot from "../Chatbot";
+import Chatbot from "../Chatbot/Chatbot";
 import Modal from "../ui/modal";
 import Features from "../Features";
 // Resizeable panel layout
@@ -52,13 +52,13 @@ export default function QuizGeneratorServer() {
   const [activeTab, setActiveTab] = useState<'sources' | 'chatbot' | 'features' | 'documents'>('sources')
 
   const features: FeatureTypes[] = [
-    { description: "Video Generation", children: <div></div>, logo: <Video className="w-6 h-6" />, color: "bg-gradient-to-r from-red-500 to-orange-500" },
-    { description: "Podcast", children: <div></div>, logo: <Mic className="w-6 h-6" />, color: "bg-gradient-to-r from-purple-500 to-pink-500" },
+    { description: "Generate Video", children: <div></div>, logo: <Video className="w-6 h-6" />, color: "bg-gradient-to-r from-red-500 to-orange-500" },
+    { description: "Create Podcast", children: <div></div>, logo: <Mic className="w-6 h-6" />, color: "bg-gradient-to-r from-purple-500 to-pink-500" },
     { description: "Cheat Sheet", children: <div></div>, logo: <Clipboard className="w-6 h-6" />, color: "bg-gradient-to-r from-blue-500 to-cyan-500" },
-    { description: "Course Creator", children: <div></div>, logo: <BookOpen className="w-6 h-6" />, color: "bg-gradient-to-r from-green-500 to-teal-500" },
-    { description: "Exam Creator", children: <div></div>, logo: <ClipboardCheck className="w-6 h-6" />, color: "bg-gradient-to-r from-yellow-500 to-amber-500" },
+    { description: "Create Course", children: <div></div>, logo: <BookOpen className="w-6 h-6" />, color: "bg-gradient-to-r from-green-500 to-teal-500" },
+    { description: "Create Exam", children: <div></div>, logo: <ClipboardCheck className="w-6 h-6" />, color: "bg-gradient-to-r from-yellow-500 to-amber-500" },
     { description: "Gamified Learning", children: <div></div>, logo: <Gamepad2 className="w-6 h-6" />, color: "bg-gradient-to-r from-pink-500 to-rose-500" },
-    { description: "Flashcards", children: <div></div>, logo: <Layers className="w-6 h-6" />, color: "bg-gradient-to-r from-indigo-500 to-violet-500" },
+    { description: "Create Flashcards", children: <div></div>, logo: <Layers className="w-6 h-6" />, color: "bg-gradient-to-r from-indigo-500 to-violet-500" },
   ]
 
   useEffect(() => {
@@ -211,9 +211,9 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
                 </div>
               </div>
               <div className="bg-white rounded-xl p-4 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Uploaded Sources</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">Uploaded Sources</h3>
                 {sources.length === 0 && linkSources.length === 0 ? (
-                  <p className="text-gray-500 text-sm">No sources uploaded yet</p>
+                  <p className="text-gray-500 text-sm text-center">No sources uploaded yet</p>
                 ) : (
                   <div className="space-y-3">
                     {sources.map((source, index) => (
@@ -249,7 +249,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           )}
           {activeTab === 'chatbot' && (
             <div className="h-full mt-15">
-              <Chatbot />
+              <Chatbot/>
             </div>
           )}
           {activeTab === 'features' && (
@@ -310,7 +310,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           <ResizablePanel defaultSize="20%" minSize="18%" maxSize = "22%">
             <ResizablePanelGroup orientation="vertical">
               <ResizablePanel>
-                <div className="h-full p-4 bg-white border-r border-gray-200 overflow-y-auto">
+                <div className="h-full p-4 bg-white border-r border-gray-200 overflow-y-auto text-center">
                   <h2 className="text-xl font-bold text-gray-800 mb-4">Sources</h2>
                   <div className="space-y-4">
                     <UploadPdfPopup sources={sources} setSources={setSources} />
@@ -324,11 +324,11 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
-              <ResizablePanel maxSize="75%" minSize="30%">
+              <ResizablePanel maxSize="75%" minSize="40%" defaultSize = "45%">
                 <div className="h-full p-4 bg-white overflow-y-auto">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Uploaded Sources</h3>
+                  <h3 className="text-lg font-bold text-gray-800 mb-4 text-center">Uploaded Sources</h3>
                   {sources.length === 0 && linkSources.length === 0 ? (
-                    <p className="text-gray-500 text-sm">No sources uploaded yet</p>
+                    <p className="text-gray-500 text-sm text-center">No sources uploaded yet</p>
                   ) : (
                     <div className="space-y-3">
                       {sources.map((source, index) => (
