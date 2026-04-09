@@ -24,11 +24,10 @@ export default function Navbar() {
     gsap.fromTo("#nav-background", {
       backdropFilter: "blur(0px)",
     }, {
-      backgroundColor: "rgba(255, 255, 255, 0.7)",
       backdropFilter: "blur(30px)",
       duration: 1,
-      opacity: 0.99,
-      ease: "power1.inOut",
+      opacity: 0.90,
+      ease: "elastic.inOut",
       scrollTrigger: {
         trigger: "body",
         start: "top top",

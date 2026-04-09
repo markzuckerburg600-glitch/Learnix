@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import UploadYoutubeLink from "./UploadYoutubeLink"
-import Modal from "./ui/modal"
+import UploadYoutubeLink from "../FileUploads/UploadYoutubeLink"
+import Modal from "../ui/modal"
 import { Play } from "lucide-react"
 
 interface UploadYoutubePopupProps {

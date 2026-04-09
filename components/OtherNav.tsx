@@ -9,10 +9,7 @@ export default function OtherNavbar() {
   // Get that underline 
   const pathName = usePathname()
   const links = [
-    { label: "Study", href: "/study"},
-    { label: "Quizzes", href: "/quiz"},
-    { label: "Video", href: "/video"},
-    { label: "Help",  href: "/help"},
+    { label: "Study", href: "/quiz"},
   ]
 
   return (

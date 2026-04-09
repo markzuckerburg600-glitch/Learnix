@@ -6,7 +6,7 @@ import { IoLogoVercel, IoLogoJavascript, IoLogoNodejs } from "react-icons/io5"
 import { RiNextjsFill, RiGeminiLine, RiTailwindCssFill } from "react-icons/ri"
 import { SiNotebooklm, SiClerk, SiOllama, SiWindsurf, SiTypescript, SiMongodb, SiGsap, SiRadixui, SiShadcnui, SiPython } from "react-icons/si"
 import { VscVscode } from "react-icons/vsc" 
-import { InfiniteSlider } from "./motion-primitives/infinite-slider"
+import { InfiniteSlider } from "../motion-primitives/infinite-slider"
 
 export default function InfiniteScroll() {
     const brandColors = {

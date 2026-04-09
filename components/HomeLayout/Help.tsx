@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/accordion"
 
 export default function Help() {
+  // FAQ
   return (
     <Accordion
       type="single"

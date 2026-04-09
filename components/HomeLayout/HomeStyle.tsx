@@ -1,10 +1,10 @@
 "use client"
 import Image from "next/image"
 import { motion } from "motion/react"
-import { Button } from "./ui/button"
+import { Button } from "../ui/button"
 import { TypeAnimation } from "react-type-animation"
-import { Sparkles, ArrowRight, Zap, BookOpen, Brain, Home } from "lucide-react"
-import Card from "./ui/styledWrapper"
+import { Sparkles, ArrowRight, Zap, BookOpen, Brain } from "lucide-react"
+import Card from "../ui/styledWrapper"
 import Help from "./Help"
 import GridReview from "./GridReview"
 import Me from "@/public/Me.png"
@@ -35,7 +35,7 @@ export default function HomeStyle() {
     { desc: "I use this for all my classes", by: "Bob Ryder" },
   ]
   return (
-    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 overflow-hidden">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-pink-50 to-blue-50 overflow-auto">
       {/* Floating decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -200,7 +200,7 @@ export default function HomeStyle() {
             </div>
           </div>
         </section>
-        {/* Animation showing preview */}
+        {/* Animation showing preview x*/}
         <HomeAnimationPreview/>
 
         {/* Testimonials Section */}

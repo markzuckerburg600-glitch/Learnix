@@ -22,15 +22,15 @@ export default function SummaryPanel({correctCount, answered}: {correctCount: nu
     <div className="w-full max-w-4xl mx-auto animate-fade-in">
       <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-5 pl-20 pr-20 shadow-2xl border border-white/20 text-center relative overflow-hidden">
         {/* Background decoration */}
-        <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+        <div className="absolute top-0 left-0 w-full h-2 bg-linear-to-r from-blue-500 via-purple-500 to-pink-500"></div>
         
         {/* Score Circle */}
         <div className="mb-8 relative">
           <div className="w-32 h-32 mx-auto relative">
-            <div className={`absolute inset-0 bg-gradient-to-r ${getScoreColor()} rounded-full animate-pulse-slow opacity-20`}></div>
-            <div className="relative w-full h-full bg-gradient-to-r from-gray-50 to-white rounded-full shadow-xl flex items-center justify-center border-4 border-white">
+            <div className={`absolute inset-0 bg-linear-to-r ${getScoreColor()} rounded-full animate-pulse-slow opacity-20`}></div>
+            <div className="relative w-full h-full bg-linear-to-r from-gray-50 to-white rounded-full shadow-xl flex items-center justify-center border-4 border-white">
               <div className="text-center">
-                <div className={`text-3xl font-bold bg-gradient-to-r ${getScoreColor()} bg-clip-text text-transparent`}>
+                <div className={`text-3xl font-bold bg-linear-to-r ${getScoreColor()} bg-clip-text text-transparent`}>
                   {percentage}%
                 </div>
                 <div className="text-sm text-gray-600 font-medium">Score</div>
@@ -44,12 +44,12 @@ export default function SummaryPanel({correctCount, answered}: {correctCount: nu
         
         <div className="mb-6">
           <div className="text-xl text-gray-700 mb-3">
-            You scored <span className={`font-bold bg-gradient-to-r ${getScoreColor()} bg-clip-text text-transparent text-2xl`}>{correctCount}</span> out of <span className="font-bold text-gray-800 text-2xl">{answered}</span> questions
+            You scored <span className={`font-bold bg-linear-to-r ${getScoreColor()} bg-clip-text text-transparent text-2xl`}>{correctCount}</span> out of <span className="font-bold text-gray-800 text-2xl">{answered}</span> questions
           </div>
           
           <div className="flex items-center justify-center gap-3 text-lg">
             <span className="text-2xl">{scoreMessage.emoji}</span>
-            <span className={`font-semibold bg-gradient-to-r ${getScoreColor()} bg-clip-text text-transparent`}>
+            <span className={`font-semibold bg-linear-to-r ${getScoreColor()} bg-clip-text text-transparent`}>
               {scoreMessage.text}
             </span>
           </div>
@@ -59,7 +59,7 @@ export default function SummaryPanel({correctCount, answered}: {correctCount: nu
         <div className="mb-8">
           <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
             <div 
-              className={`h-full bg-gradient-to-r ${getScoreColor()} rounded-full transition-all duration-1000 ease-out relative overflow-hidden`}
+              className={`h-full bg-linear-to-r ${getScoreColor()} rounded-full transition-all duration-1000 ease-out relative overflow-hidden`}
               style={{ width: `${percentage}%` }}
             >
               <div className="absolute inset-0 bg-white opacity-20 animate-shimmer"></div>

@@ -17,10 +17,10 @@ export default function Question(question: QuestionMap) {
       <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-2xl border border-white/20 hover:shadow-3xl transition-all duration-500">
         {/* Question number badge */}
         <div className="flex items-center gap-3 mb-4">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+          <div className="bg-linear-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
             Question
           </div>
-          <div className="h-1 bg-gradient-to-r from-blue-200 to-purple-200 flex-1 rounded-full"></div>
+          <div className="h-1 bg-linear-to-r from-blue-200 to-purple-200 flex-1 rounded-full"></div>
         </div>
         
         <h2 className="text-xl font-bold text-gray-800 mb-6 leading-relaxed">
@@ -47,7 +47,7 @@ export default function Question(question: QuestionMap) {
         <div className="relative">
           <button
             onClick={() => setShowHint(!showHint)}
-            className="w-full bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 text-left hover:from-amber-100 hover:to-orange-100 transition-all duration-300 group"
+            className="w-full bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 text-left hover:from-amber-100 hover:to-orange-100 transition-all duration-300 group"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

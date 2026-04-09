@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import UploadFile from "./UploadFile"
-import Modal from "./ui/modal"
+import UploadFile from "../FileUploads/UploadFile"
+import Modal from "../ui/modal"
 import { Upload } from "lucide-react"
 
 interface UploadPdfPopupProps {

@@ -2,8 +2,8 @@
 import { Fragment, useState } from "react"
 import { Page, Text, View, Document, StyleSheet, PDFViewer } from "@react-pdf/renderer"
 import { cn } from "@/lib/utils"
-import { Button } from "./ui/button"
-import QuizGeneratorServer, { QuestionMap } from "./Quiz/QuizGeneratorServer"
+import { Button } from "../ui/button"
+import type { QuestionMap } from "@/components/Quiz/QuizGeneratorServer"
 export default function FileAcceptor(
   // Creates pdf and pdf viewer for downloading the quiz 
   { quizData, 
@@ -166,7 +166,7 @@ export default function FileAcceptor(
                               </Text>
                             </Fragment>
                           )}
-                          <Text style={styles.reasoning}> Explaination: {question.explaination}</Text>
+                          <Text style={styles.reasoning}> Explanation: {question.explanation}</Text>
                         </View>
                       </View>
                     )
@@ -254,7 +254,7 @@ export default function FileAcceptor(
                       </View>
                     )
                   })}
-                  {/* Answer key w explainations */}
+                  {/* Answer key w explanations */}
                   {includeKey && 
                   <>
                   <Text style={styles.title}> Answer Key </Text>
@@ -272,7 +272,7 @@ export default function FileAcceptor(
                               </Text>
                             </Fragment>
                           )}
-                          <Text style={styles.reasoning}> Explaination: {question.explaination}</Text>
+                          <Text style={styles.reasoning}> Explanation: {question.explanation}</Text>
                         </View>
                       </View>
                     )

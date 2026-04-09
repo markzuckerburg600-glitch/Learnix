@@ -21,7 +21,7 @@ export default function Chatbot() {
         ...messages,
         userMessage
       ], {
-        model: "openai/gpt-5.4",
+        model: "qwen/qwen3.6-plus-preview:free",
         tools: [{type: "web_search"}]
       })
 

@@ -76,7 +76,7 @@ export default function UploadYoutubeLink({
                 <button 
                     onClick={handleClick} 
                     disabled={loading || !link.trim()}
-                    className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:scale-105 disabled:transform-none flex items-center justify-center gap-2 min-w-24"
+                    className="px-4 py-2 bg-linear-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-md hover:shadow-lg transform hover:scale-105 disabled:transform-none flex items-center justify-center gap-2 min-w-24"
                 >
                     {loading ? (
                         <>
@@ -118,7 +118,7 @@ export default function UploadYoutubeLink({
                         {linkSourcesTitles.map((title, i) => (
                             <div 
                                 key={i} 
-                                className="group relative p-3 bg-gradient-to-r from-red-50 to-pink-50 border border-red-100 rounded-lg hover:shadow-sm transition-all duration-300"
+                                className="group relative p-3 bg-linear-to-r from-red-50 to-pink-50 border border-red-100 rounded-lg hover:shadow-sm transition-all duration-300"
                             >
                                 <div className="flex items-start justify-between gap-2">
                                     <div className="flex-1 min-w-0">
