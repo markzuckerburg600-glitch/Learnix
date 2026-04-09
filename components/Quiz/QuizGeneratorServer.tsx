@@ -13,16 +13,19 @@ import QuizGeneratorPopup from "./QuizGeneratorPopup";
 import { QuestionContext } from "@/lib/context";
 import Chatbot from "../Chatbot";
 import Modal from "../ui/modal";
+import Features from "../Features";
 // Resizeable panel layout
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../ui/resizable";
-import { X, FileText, MessageSquare, Settings, File } from "lucide-react";
+import { X, FileText, MessageSquare, Settings, File, Video, Mic, Clipboard, BookOpen, ClipboardCheck, Gamepad2, Layers } from "lucide-react";
+import { description } from "@/lib/constants";
+import { FeatureTypes } from "@/types/types";
 
 export default interface QuestionMap {
-    questionText: string,
-    choices: string[],
-    hint: string,
-    correct: number,
-    explanation: string 
+  questionText: string,
+  choices: string[],
+  hint: string,
+  correct: number,
+  explanation: string
 }
 
 export default function QuizGeneratorServer() {
@@ -48,11 +51,21 @@ export default function QuizGeneratorServer() {
   const [isMobile, setIsMobile] = useState(false)
   const [activeTab, setActiveTab] = useState<'sources' | 'chatbot' | 'features' | 'documents'>('sources')
 
+  const features: FeatureTypes[] = [
+    { description: "Video Generation", children: <div></div>, logo: <Video className="w-6 h-6" />, color: "bg-gradient-to-r from-red-500 to-orange-500" },
+    { description: "Podcast", children: <div></div>, logo: <Mic className="w-6 h-6" />, color: "bg-gradient-to-r from-purple-500 to-pink-500" },
+    { description: "Cheat Sheet", children: <div></div>, logo: <Clipboard className="w-6 h-6" />, color: "bg-gradient-to-r from-blue-500 to-cyan-500" },
+    { description: "Course Creator", children: <div></div>, logo: <BookOpen className="w-6 h-6" />, color: "bg-gradient-to-r from-green-500 to-teal-500" },
+    { description: "Exam Creator", children: <div></div>, logo: <ClipboardCheck className="w-6 h-6" />, color: "bg-gradient-to-r from-yellow-500 to-amber-500" },
+    { description: "Gamified Learning", children: <div></div>, logo: <Gamepad2 className="w-6 h-6" />, color: "bg-gradient-to-r from-pink-500 to-rose-500" },
+    { description: "Flashcards", children: <div></div>, logo: <Layers className="w-6 h-6" />, color: "bg-gradient-to-r from-indigo-500 to-violet-500" },
+  ]
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024)
     }
-    
+
     checkMobile()
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
@@ -107,24 +120,24 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
     try {
       const reply = await puter.ai.chat([
         {
-            role: "system",
-            content: systemPrompt
+          role: "system",
+          content: systemPrompt
         },
         {
-            role: "user",
-            content: prompt
-        } 
-    ], {
-       model: "gpt-5-nano",
-       tools: [{type: "web_search"}]
-     }
-  );
-      
+          role: "user",
+          content: prompt
+        }
+      ], {
+        model: "gpt-5-nano",
+        tools: [{ type: "web_search" }]
+      }
+      );
+
       // Check if request was cancelled while waiting
       if (isCancelledRef.current) {
         return; // Exit early if cancelled
       }
-      
+
       const text = reply.message?.content.toString() || "";
       const parsed = JSON.parse(text);
       setQuizData(parsed);
@@ -144,36 +157,32 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
       <div className="flex justify-around py-2">
         <button
           onClick={() => setActiveTab('sources')}
-          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'sources' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
-          }`}
+          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${activeTab === 'sources' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
+            }`}
         >
           <FileText className="w-6 h-6" />
           <span className="text-xs mt-1">Sources</span>
         </button>
         <button
           onClick={() => setActiveTab('chatbot')}
-          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'chatbot' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
-          }`}
+          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${activeTab === 'chatbot' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
+            }`}
         >
           <MessageSquare className="w-6 h-6" />
           <span className="text-xs mt-1">Chat</span>
         </button>
         <button
           onClick={() => setActiveTab('features')}
-          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'features' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
-          }`}
+          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${activeTab === 'features' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
+            }`}
         >
           <Settings className="w-6 h-6" />
           <span className="text-xs mt-1">Features</span>
         </button>
         <button
           onClick={() => setActiveTab('documents')}
-          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${
-            activeTab === 'documents' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
-          }`}
+          className={`flex flex-col items-center px-4 py-2 rounded-lg transition-colors ${activeTab === 'documents' ? 'text-blue-600 bg-blue-50' : 'text-gray-600'
+            }`}
         >
           <File className="w-6 h-6" />
           <span className="text-xs mt-1">Docs</span>
@@ -259,14 +268,12 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
                     onGenerate={handleAsk}
                     loading={loading}
                   />
-                  <button className="p-4 bg-white border-2 border-dashed border-gray-300 rounded-xl hover:border-red-400 hover:bg-red-50 transition-all duration-300 flex flex-col items-center gap-2 group">
-                    <div className="w-12 h-12 bg-linear-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <span className="text-sm font-semibold text-gray-700">Video Support</span>
-                  </button>
+                  {/* Features mapping */}
+                  {features.map((feature, i) =>
+                  <Features key = {i} description={feature.description} logo={feature.logo} color={feature.color}>
+                    {feature.children}
+                  </Features>
+                  )}
                 </div>
                 {loading && <Loader onCancel={cancelRequest} />}
               </div>
@@ -300,130 +307,127 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
         // Desktop layout - resizable panels
         <ResizablePanelGroup orientation="horizontal" className="h-[calc(100vh-64px)] w-full">
           {/* Sources and sources viewer */}
-          <ResizablePanel defaultSize="25%" minSize="20%">
+          <ResizablePanel defaultSize="25%" minSize="10%" maxSize = "30%">
             <ResizablePanelGroup orientation="vertical">
               <ResizablePanel>
-            <div className="h-full p-4 bg-white border-r border-gray-200 overflow-y-auto">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Sources</h2>
-              <div className="space-y-4">
-                <UploadPdfPopup sources={sources} setSources={setSources} />
-                <UploadYoutubePopup
-                  linkSources={linkSources}
-                  setLinkSources={setLinkSources}
-                  linkSourcesTitles={linkSourcesTitles}
-                  setLinkSourcesTitles={setLinkSourcesTitles}
-                />
-              </div>
-            </div>
-            </ResizablePanel>
-            <ResizableHandle withHandle/>
-            <ResizablePanel maxSize="75%" minSize="30%">
-            <div className="h-full p-4 bg-white overflow-y-auto">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Uploaded Sources</h3>
-              {sources.length === 0 && linkSources.length === 0 ? (
-                <p className="text-gray-500 text-sm">No sources uploaded yet</p>
-              ) : (
-                <div className="space-y-3">
-                  {sources.map((source, index) => (
-                    <div key={index} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                      <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.4145.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span className="text-sm text-gray-700 truncate">{source}</span>
-                        <button onClick = {() => {
-                          setSources(sources.filter((_, i) => i !== index))
-                        }}>
-                        <X/>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  {linkSources.map((source, index) => (
-                    <div key={index} className="p-3 bg-red-50 rounded-lg border border-red-200">
-                      <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                        <span className="text-sm text-gray-700 truncate">{linkSourcesTitles[index] || source}</span>
-                        <button onClick = {() => {
-                          setLinkSources(linkSources.filter((_, i) => i !== index))
-                        }}>
-                        <X/>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                <div className="h-full p-4 bg-white border-r border-gray-200 overflow-y-auto">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Sources</h2>
+                  <div className="space-y-4">
+                    <UploadPdfPopup sources={sources} setSources={setSources} />
+                    <UploadYoutubePopup
+                      linkSources={linkSources}
+                      setLinkSources={setLinkSources}
+                      linkSourcesTitles={linkSourcesTitles}
+                      setLinkSourcesTitles={setLinkSourcesTitles}
+                    />
+                  </div>
                 </div>
-              )}
-            </div>
-            </ResizablePanel>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel maxSize="75%" minSize="30%">
+                <div className="h-full p-4 bg-white overflow-y-auto">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4">Uploaded Sources</h3>
+                  {sources.length === 0 && linkSources.length === 0 ? (
+                    <p className="text-gray-500 text-sm">No sources uploaded yet</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {sources.map((source, index) => (
+                        <div key={index} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.4145.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span className="text-sm text-gray-700 truncate">{source}</span>
+                            <button onClick={() => {
+                              setSources(sources.filter((_, i) => i !== index))
+                            }}>
+                              <X />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {linkSources.map((source, index) => (
+                        <div key={index} className="p-3 bg-red-50 rounded-lg border border-red-200">
+                          <div className="flex items-center gap-2">
+                            <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            <span className="text-sm text-gray-700 truncate">{linkSourcesTitles[index] || source}</span>
+                            <button onClick={() => {
+                              setLinkSources(linkSources.filter((_, i) => i !== index))
+                            }}>
+                              <X />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
           {/* Chatbot section */}
-          <ResizableHandle withHandle/>
+          <ResizableHandle withHandle />
           <ResizablePanel defaultSize="35%" minSize="25%">
-            <Chatbot/>
+            <Chatbot />
           </ResizablePanel>
-          <ResizableHandle withHandle/>
+          <ResizableHandle withHandle />
           {/* Feature section */}
           <ResizablePanel defaultSize="40%" minSize="20%">
             <ResizablePanelGroup orientation="vertical">
-              <ResizablePanel maxSize="70%">
-            <div className="h-full p-4 bg-gray-50 overflow-y-auto">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Features</h2>
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <QuizGeneratorPopup
-                  prompt={prompt}
-                  setPrompt={setPrompt}
-                  numQuestions={numQuestions}
-                  setNumQuestions={setNumQuestions}
-                  difficulty={difficulty}
-                  setDifficulty={setDifficulty}
-                  range={range}
-                  onGenerate={handleAsk}
-                  loading={loading}
-                />
-                <button className="p-4 bg-white border-2 border-dashed border-gray-300 rounded-xl hover:border-red-400 hover:bg-red-50 transition-all duration-300 flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 bg-linear-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
+              <ResizablePanel maxSize="80%">
+                <div className="h-full p-4 bg-gray-50 overflow-y-auto">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Features</h2>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <QuizGeneratorPopup
+                      prompt={prompt}
+                      setPrompt={setPrompt}
+                      numQuestions={numQuestions}
+                      setNumQuestions={setNumQuestions}
+                      difficulty={difficulty}
+                      setDifficulty={setDifficulty}
+                      range={range}
+                      onGenerate={handleAsk}
+                      loading={loading}
+                    />
+                  {features.map((feature, i) =>
+                  <Features key = {i} description={feature.description} logo={feature.logo} color={feature.color}>
+                    {feature.children}
+                  </Features>
+                  )}
                   </div>
-                  <span className="text-sm font-semibold text-gray-700">Video Support</span>
-                </button>
-              </div>
-            {loading && (
-              <Loader onCancel={cancelRequest} />
-            )}
-        </div>
-        </ResizablePanel>
-        <ResizableHandle withHandle/>
-        <ResizablePanel maxSize="70%" minSize="20%">
-            <div className="h-full p-4 bg-white overflow-y-auto">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Generated Documents</h3>
-              {quizData ? (
-                <div className="space-y-3">
-                  <button
-                    onClick={() => setShowQuizModal(true)}
-                    className="w-full p-4 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-semibold">Quiz 1</span>
-                      <span className="text-sm opacity-80">{quizData.length} questions</span>
-                    </div>
-                  </button>
+                  {loading && (
+                    <Loader onCancel={cancelRequest} />
+                  )}
                 </div>
-              ) : (
-                <p className="text-gray-500 text-sm">No documents generated yet</p>
-              )}
-            </div>
-        </ResizablePanel>
-        </ResizablePanelGroup>
-        </ResizablePanel>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel maxSize="70%" minSize="20%">
+                <div className="h-full p-4 bg-white overflow-y-auto">
+                  <h3 className="text-lg font-bold text-gray-800 mb-4">Generated Documents</h3>
+                  {quizData ? (
+                    <div className="space-y-3">
+                      <button
+                        onClick={() => setShowQuizModal(true)}
+                        className="w-full p-4 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-semibold">Quiz 1</span>
+                          <span className="text-sm opacity-80">{quizData.length} questions</span>
+                        </div>
+                      </button>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No documents generated yet</p>
+                  )}
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
         </ResizablePanelGroup>
       )}
-      
+
       {/* Quiz Modal */}
       {showQuizModal && quizData && (
         <Modal isOpen={showQuizModal} onClose={() => setShowQuizModal(false)} title="Your Quiz">
