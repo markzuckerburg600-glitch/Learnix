@@ -282,7 +282,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           {activeTab === 'documents' && (
             <div className="p-4 mt-15">
               <div className="bg-white rounded-xl p-4 shadow-sm">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">Generated Documents</h3>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">Documents</h3>
                 {quizData ? (
                   <div className="space-y-3">
                     <button
@@ -307,7 +307,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
         // Desktop layout - resizable panels
         <ResizablePanelGroup orientation="horizontal" className="h-[calc(100vh-64px)] w-full">
           {/* Sources and sources viewer */}
-          <ResizablePanel defaultSize="25%" minSize="10%" maxSize = "30%">
+          <ResizablePanel defaultSize="20%" minSize="18%" maxSize = "22%">
             <ResizablePanelGroup orientation="vertical">
               <ResizablePanel>
                 <div className="h-full p-4 bg-white border-r border-gray-200 overflow-y-auto">
@@ -369,12 +369,12 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           </ResizablePanel>
           {/* Chatbot section */}
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize="35%" minSize="25%">
+          <ResizablePanel defaultSize="75%" minSize="25%">
             <Chatbot />
           </ResizablePanel>
           <ResizableHandle withHandle />
           {/* Feature section */}
-          <ResizablePanel defaultSize="40%" minSize="20%">
+          <ResizablePanel defaultSize="20%" minSize="18%" maxSize="25%">
             <ResizablePanelGroup orientation="vertical">
               <ResizablePanel maxSize="80%">
                 <div className="h-full p-4 bg-gray-50 overflow-y-auto">
@@ -403,9 +403,9 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
-              <ResizablePanel maxSize="70%" minSize="20%">
+              <ResizablePanel maxSize="70%" minSize="15%" defaultSize="20%">
                 <div className="h-full p-4 bg-white overflow-y-auto">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Generated Documents</h3>
+                  <h3 className="text-lg font-bold text-gray-800 mb-4">Documents</h3>
                   {quizData ? (
                     <div className="space-y-3">
                       <button
