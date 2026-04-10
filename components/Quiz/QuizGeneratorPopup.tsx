@@ -74,7 +74,7 @@ export default function QuizGeneratorPopup({
         <div className="w-12 h-12 bg-linear-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300">
           <Brain className="w-6 h-6" />
         </div>
-        <span className="text-sm font-semibold text-gray-700">Generate Quiz</span>
+        <span className="text-xs font-semibold text-gray-700">Generate Quiz</span>
       </button>
 
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Quiz Settings">

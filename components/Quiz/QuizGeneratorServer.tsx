@@ -249,7 +249,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           )}
           {activeTab === 'chatbot' && (
             <div className="h-full mt-15">
-              <Chatbot/>
+              <Chatbot sources = {sources} linkSources = {linkSources}/>
             </div>
           )}
           {activeTab === 'features' && (
@@ -370,7 +370,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           {/* Chatbot section */}
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize="75%" minSize="25%">
-            <Chatbot />
+            <Chatbot sources={sources} linkSources={linkSources}/>
           </ResizablePanel>
           <ResizableHandle withHandle />
           {/* Feature section */}

@@ -5,13 +5,19 @@ import { SendHorizonal, Globe, Plus, Mic, Brain } from "lucide-react"
 import SelectChatbot from "./SelectChatbot"
 import puter from "@heyputer/puter.js"
 
-export default function Chatbot() {
+export default function Chatbot({ sources, linkSources }: { sources: string[], linkSources: string[] }) {
   const [messages, setMessages] = useState<{ role: string, content: string }[]>([])
   const [input, setInput] = useState<string>("")
   const [loading, setLoading] = useState<boolean>(false)
   const [chatModel, setChatModel] = useState<string>("gpt-5-nano")
+  const [thinking, setThinking] = useState<string>("")
   // Web search
   const [search, setSearch] = useState<boolean>(false)
+  let systemPrompt = `You are a helpful tutor who analyzes sources to make complex topics simple. Here are the users sources.`
+  if (sources || linkSources) {
+  systemPrompt += sources.join("\n")
+  systemPrompt += linkSources.join("\n")
+  }
 
   const handleSend = async () => {
     if (!input.trim()) return
@@ -19,15 +25,21 @@ export default function Chatbot() {
     const userMessage = { role: "user", content: input }
     setMessages(prev => [...prev, userMessage])
     setInput("")
+    setThinking("")
     setLoading(true)
 
     try {
       const reply = await puter.ai.chat([
+        {
+          role: "system",
+          content: systemPrompt
+        },
+        
         ...messages,
         userMessage
       ], {
         model: chatModel,
-        tools: search ? [{ type: "web_search" }] : [{}],
+        ...(search && { tools: [{ type: "web_search" }] }),
         stream: true,
       })
 
@@ -37,9 +49,15 @@ export default function Chatbot() {
       }
       // Prevent duplicated content cuz react acting weird 
       let content = ""
+      let thinkingStream = ""
       setMessages(prev => [...prev, assistantMessage])
 
       for await (const part of reply) {
+        // Thinking mode for the model 
+        if (part?.reasoning) {
+          thinkingStream += part?.reasoning
+          setThinking(thinkingStream)
+        }
         // Could be undefined 
         content += part.text || ""
         setMessages(prev => {
@@ -50,10 +68,10 @@ export default function Chatbot() {
         )
       }
     } catch (error) {
-      console.error(error)
+      console.error("Chat error:", error)
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "Sorry, something went wrong. Please try again."
+        content: `Sorry, something went wrong. Error: ${error instanceof Error ? error.message : String(error)}`
       }])
     } finally {
       setLoading(false)
@@ -101,15 +119,28 @@ export default function Chatbot() {
             </div>
           </div>
         )}
+        {thinking && (
+          <div className="flex justify-start">
+            <div className="bg-purple-50 border border-purple-200 p-3 rounded-2xl max-w-[80%]">
+              <div className="flex items-start space-x-2">
+                <Brain className="w-5 h-5 text-purple-600 shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-purple-700 mb-1">Thinking</p>
+                  <p className="text-sm text-gray-700 whitespace-pre-wrap">{thinking}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="relative flex gap-2">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => e.key === "Enter" && handleSend()}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
           placeholder="What would you like to know?"
-          className="pt-5 pb-10 resize-none flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-500 bg-gray-100"
+          className="pt-5 pb-10 resize-none flex-1 px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-300 bg-gray-100"
           disabled={loading}
         />
         {/* Send button */}
