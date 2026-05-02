@@ -30,7 +30,7 @@ export default function QuestionChoice(
     }
     
     const getButtonStyles = () => {
-        const baseStyles = "w-full text-left p-3 rounded-2xl font-medium transition-all duration-500 transform border-2 flex items-center gap-4 relative overflow-hidden"
+        const baseStyles = "w-full text-left p-2 rounded-2xl font-medium transition-all duration-500 transform border-2 flex items-center gap-6 relative overflow-hidden"
         
         if (clickedIndex === null) {
             return `${baseStyles} bg-white border-gray-200 hover:border-blue-400 hover:shadow-lg hover:scale-[1.02] hover:bg-linear-to-r hover:from-blue-50 hover:to-purple-50 cursor-pointer group`

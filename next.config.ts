@@ -15,7 +15,9 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   reactCompiler: true,
-
+  images: {
+    formats: ["image/avif", "image/webp"],
+  }
 };
 
 export default nextConfig;

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { SendHorizonal, Globe, Plus, Mic, Brain } from "lucide-react"
 import SelectChatbot from "./SelectChatbot"
 import puter from "@heyputer/puter.js"
+import { MarkdownContent } from "../ui/markdown"
 
 export default function Chatbot({ sources, linkSources }: { sources: string[], linkSources: string[] }) {
   const [messages, setMessages] = useState<{ role: string, content: string }[]>([])
@@ -13,7 +14,11 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
   const [thinking, setThinking] = useState<string>("")
   // Web search
   const [search, setSearch] = useState<boolean>(false)
-  let systemPrompt = `You are a helpful tutor who analyzes sources to make complex topics simple. Here are the users sources.`
+  // System prompt and stuff 
+  let systemPrompt = `
+  You are a tutor who analyzes sources to simplify complex topics. 
+  Use bullet points or tables instead of long paragraphs
+  Here are the users sources.`
   if (sources || linkSources) {
   systemPrompt += sources.join("\n")
   systemPrompt += linkSources.join("\n")
@@ -27,7 +32,7 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
     setInput("")
     setThinking("")
     setLoading(true)
-
+    // Request 
     try {
       const reply = await puter.ai.chat([
         {
@@ -103,7 +108,7 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
                     : "bg-gray-200 text-gray-800"
                   }`}
               >
-                {message.content}
+                <MarkdownContent id = {index} content = {message.content}/>
               </div>
             </div>
           ))

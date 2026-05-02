@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Activity } from "react";
 import { useDebounce } from "use-debounce"
 import puter from "@heyputer/puter.js";
 import Question from "./Question";
@@ -17,7 +17,6 @@ import Features from "../Features";
 // Resizeable panel layout
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../ui/resizable";
 import { X, FileText, MessageSquare, Settings, File, Video, Mic, Clipboard, BookOpen, ClipboardCheck, Gamepad2, Layers } from "lucide-react";
-import { description } from "@/lib/constants";
 import { FeatureTypes } from "@/types/types";
 
 export default interface QuestionMap {
@@ -28,13 +27,20 @@ export default interface QuestionMap {
   explanation: string
 }
 
-export default function QuizGeneratorServer() {
+export default function QuizGeneratorServer({ notebookId }: { notebookId: string }) {
+  // Option to change name of notebook
+  // After changing, post this to database for saving 
+  const [notebookName, setNotebookName] = useState<string>("")
+  // User prompt 
   const [prompt, setPrompt] = useState<string>("");
+  // Add onto user prompt 
+  // Implement rag to fetch sources 
   const [sources, setSources] = useState<string[]>([])
   const [linkSources, setLinkSources] = useState<string[]>([])
   const [linkSourcesTitles, setLinkSourcesTitles] = useState<string[]>([])
   const [loading, setLoading] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  // Everything in quiz data will be sent do database 
   const [quizData, setQuizData] = useState<QuestionMap[] | null>(null);
   const [numQuestions, setNumQuestions] = useState<number>(10)
   const [difficulty, setDifficulty] = useState("medium")
@@ -48,7 +54,7 @@ export default function QuizGeneratorServer() {
   const [debouncedTitle] = useDebounce(title, 500)
   const [debouncedHeader] = useDebounce(header, 500)
   const [showQuizModal, setShowQuizModal] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean>(false)
   const [activeTab, setActiveTab] = useState<'sources' | 'chatbot' | 'features' | 'documents'>('sources')
 
   const features: FeatureTypes[] = [
@@ -70,6 +76,77 @@ export default function QuizGeneratorServer() {
     window.addEventListener('resize', checkMobile)
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
+
+  // Load notebook data on mount
+  useEffect(() => {
+    const loadNotebook = async () => {
+      try {
+        const response = await fetch(`/api/notebooks/${notebookId}`);
+        const data = await response.json();
+        if (data.notebook) {
+          setNotebookName(data.notebook.name);
+          setSources(data.notebook.sources || []);
+          setLinkSources(data.notebook.linkSources || []);
+          setLinkSourcesTitles(data.notebook.linkSourcesTitles || []);
+        }
+      } catch (error) {
+        console.error("Error loading notebook:", error);
+      }
+    };
+
+    if (notebookId) {
+      loadNotebook();
+    }
+  }, [notebookId]);
+
+  // Save notebook data when sources change
+  useEffect(() => {
+    const saveNotebook = async () => {
+      try {
+        await fetch(`/api/notebooks/${notebookId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: notebookName,
+            sources,
+            linkSources,
+            linkSourcesTitles
+          })
+        });
+      } catch (error) {
+        console.error("Error saving notebook:", error);
+      }
+    };
+
+    if (notebookId) {
+      saveNotebook();
+    }
+  }, [notebookName, sources, linkSources, linkSourcesTitles, notebookId]);
+
+  // Save quiz data when quizData is generated
+  useEffect(() => {
+    const saveQuiz = async () => {
+      if (!quizData || !notebookId) return;
+
+      try {
+        await fetch('/api/quiz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            notebookId,
+            data: quizData,
+            prompt,
+            numQuestions,
+            difficulty
+          })
+        });
+      } catch (error) {
+        console.error("Error saving quiz:", error);
+      }
+    };
+
+    saveQuiz();
+  }, [quizData, notebookId, prompt, numQuestions, difficulty]);
 
   const range = Array.from({ length: 55 }, (_, i) => i + 1)
 
@@ -193,8 +270,8 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
 
   return (
     <>
-      {isMobile ? (
-        // Mobile layout - vertical stacking with tabs
+      <Activity mode = {isMobile ? "visible" : "hidden"}>
+        {/* Mobile layout - vertical stacking with tabs */}
         <div className="h-[calc(100vh-64px)] w-full pb-16 overflow-y-auto">
           {activeTab === 'sources' && (
             <div className="p-4 space-y-4 mt-15">
@@ -290,8 +367,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
                       className="w-full p-4 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-semibold">Quiz 1</span>
-                        <span className="text-sm opacity-80">{quizData.length} questions</span>
+                        <span className="font-semibold">{prompt}</span>
                       </div>
                     </button>
                   </div>
@@ -303,11 +379,14 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           )}
           <MobileTabs />
         </div>
-      ) : (
-        // Desktop layout - resizable panels
+      </Activity>
+      
+
+        {/* Desktop layout - resizable panels */}
+        <Activity mode = {isMobile ? "hidden" : "visible"}>
         <ResizablePanelGroup orientation="horizontal" className="h-[calc(100vh-64px)] w-full">
           {/* Sources and sources viewer */}
-          <ResizablePanel defaultSize="20%" minSize="18%" maxSize = "22%">
+          <ResizablePanel defaultSize="20%" minSize="12%" maxSize = "22%">
             <ResizablePanelGroup orientation="vertical">
               <ResizablePanel>
                 <div className="h-full p-4 bg-white border-r border-gray-200 overflow-y-auto text-center">
@@ -374,7 +453,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
           </ResizablePanel>
           <ResizableHandle withHandle />
           {/* Feature section */}
-          <ResizablePanel defaultSize="20%" minSize="18%" maxSize="25%">
+          <ResizablePanel defaultSize="20%" minSize="15%" maxSize="25%">
             <ResizablePanelGroup orientation="vertical">
               <ResizablePanel maxSize="80%">
                 <div className="h-full p-4 bg-gray-50 overflow-y-auto">
@@ -410,11 +489,10 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
                     <div className="space-y-3">
                       <button
                         onClick={() => setShowQuizModal(true)}
-                        className="w-full p-4 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
+                        className="text-sm w-full p-2 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-xl hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-semibold">Quiz 1</span>
-                          <span className="text-sm opacity-80">{quizData.length} questions</span>
+                          <span className="text-sx font-semibold">{prompt}</span>
                         </div>
                       </button>
                     </div>
@@ -426,10 +504,11 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             </ResizablePanelGroup>
           </ResizablePanel>
         </ResizablePanelGroup>
-      )}
+      </Activity>
+    
 
       {/* Quiz Modal */}
-      {showQuizModal && quizData && (
+      <Activity mode = {showQuizModal && quizData ? "visible" : "hidden"}>
         <Modal isOpen={showQuizModal} onClose={() => setShowQuizModal(false)} title="Your Quiz">
           <div className="min-h-[60vh]">
             {/* Progress bar */}
@@ -474,7 +553,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             </div>
 
             {/* Navigation buttons */}
-            <div className="flex justify-center gap-3 bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20 mt-6">
+            <div className="sticky bottom-0 flex justify-center gap-3 bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20 mt-6">
               <button
                 onClick={() => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))}
                 disabled={currentQuestionIndex === 0}
@@ -570,7 +649,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             )}
           </div>
         </Modal>
-      )}
+      </Activity>
     </>
   );
 }

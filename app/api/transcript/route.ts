@@ -1,10 +1,10 @@
 // app/api/transcript/route.ts
 import { NextResponse } from 'next/server';
-import { withRetry } from '@/lib/retry';
-import { rateLimiter } from '@/lib/rate-limiter';
-import { cache } from '@/lib/cache';
-import { validateYouTubeUrl } from '@/lib/validation';
-import { fetchWithFallback } from '@/lib/youtube-fallback';
+import { withRetry } from '@/lib/youtube/retry';
+import { rateLimiter } from '@/lib/youtube/rate-limiter';
+import { cache } from '@/lib/youtube/cache';
+import { validateYouTubeUrl } from '@/lib/youtube/validation';
+import { fetchWithFallback } from '@/lib/youtube/youtube-fallback';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
