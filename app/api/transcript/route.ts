@@ -68,6 +68,7 @@ export async function GET(request: Request) {
       videoId: validation.videoId
     };
 
+
     // Cache the result for 1 hour
     await cache.set(cacheKey, result, 3600);
 

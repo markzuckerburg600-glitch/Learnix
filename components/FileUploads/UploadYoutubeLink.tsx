@@ -34,7 +34,7 @@ export default function UploadYoutubeLink({
         
         try {
             // Fetch from backend cuz of cors 
-            const res = await fetch(`api/transcript?url=${encodeURIComponent(link)}`)
+            const res = await fetch(`/api/transcript?url=${encodeURIComponent(link)}`)
             
             if (!res.ok) {
                 const errorData = await res.json()
@@ -48,6 +48,7 @@ export default function UploadYoutubeLink({
             setSuccess(`Successfully added: ${result.title}`)
             setLink("")
         } catch (err) {
+            console.log("UploadYoutubeLink error:", err)
             setError(err instanceof Error ? err.message : 'Failed to fetch transcript')
         } finally {
             setLoading(false)

@@ -6,7 +6,7 @@ import puter from "@heyputer/puter.js";
 import Question from "./Question";
 import Loader from "../Loading";
 import SummaryPanel from "./SummaryPanel";
-import FileAcceptor from "../FileUploads/FileAcceptor";
+import dynamic from "next/dynamic";
 import UploadPdfPopup from "../FileUploads/UploadPdfPopup";
 import UploadYoutubePopup from "../FileUploads/UploadYoutubePopup";
 import QuizGeneratorPopup from "./QuizGeneratorPopup";
@@ -18,6 +18,11 @@ import Features from "../Features";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "../ui/resizable";
 import { X, FileText, MessageSquare, Settings, File, Video, Mic, Clipboard, BookOpen, ClipboardCheck, Gamepad2, Layers } from "lucide-react";
 import { FeatureTypes } from "@/types/types";
+
+const FileAcceptor = dynamic(() => import("../FileUploads/FileAcceptor"), {
+  ssr: false,
+  loading: () => <div>Loading PDF viewer...</div>
+});
 
 export default interface QuestionMap {
   questionText: string,
@@ -270,11 +275,11 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
 
   return (
     <>
-      <Activity mode = {isMobile ? "visible" : "hidden"}>
+      <Activity mode={isMobile ? "visible" : "hidden"}>
         {/* Mobile layout - vertical stacking with tabs */}
         <div className="h-[calc(100vh-64px)] w-full pb-16 overflow-y-auto">
           {activeTab === 'sources' && (
-            <div className="p-4 space-y-4 mt-15">
+            <div className="p-4 space-y-4 mt-5">
               <div className="bg-white rounded-xl p-4 shadow-sm">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Sources</h2>
                 <div className="space-y-4">
@@ -325,12 +330,12 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             </div>
           )}
           {activeTab === 'chatbot' && (
-            <div className="h-full mt-15">
+            <div className="h-full mt-5">
               <Chatbot sources = {sources} linkSources = {linkSources}/>
             </div>
           )}
           {activeTab === 'features' && (
-            <div className="p-4 space-y-4 mt-15">
+            <div className="p-4 space-y-4 mt-3">
               <div className="bg-gray-50 rounded-xl p-4">
                 <h2 className="text-xl font-bold text-gray-800 mb-4">Features</h2>
                 <div className="grid grid-cols-2 gap-4 mb-6">
@@ -357,7 +362,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             </div>
           )}
           {activeTab === 'documents' && (
-            <div className="p-4 mt-15">
+            <div className="p-4 mt-5">
               <div className="bg-white rounded-xl p-4 shadow-sm">
                 <h3 className="text-lg font-bold text-gray-800 mb-4">Documents</h3>
                 {quizData ? (
@@ -384,7 +389,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
 
         {/* Desktop layout - resizable panels */}
         <Activity mode = {isMobile ? "hidden" : "visible"}>
-        <ResizablePanelGroup orientation="horizontal" className="h-[calc(100vh-64px)] w-full">
+        <ResizablePanelGroup orientation="horizontal" className="h-full w-full mt-10">
           {/* Sources and sources viewer */}
           <ResizablePanel defaultSize="20%" minSize="12%" maxSize = "22%">
             <ResizablePanelGroup orientation="vertical">
@@ -515,7 +520,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             <div className="mb-6">
               <div className="flex justify-between items-center mb-3">
                 <div className="text-base font-semibold text-gray-700">
-                  {currentQuestionIndex < quizData.length ?
+                  {quizData && currentQuestionIndex < quizData.length ?
                     `Question ${currentQuestionIndex + 1} of ${quizData.length}` :
                     'Quiz Summary'
                   }
@@ -537,14 +542,14 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
               <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                 <div
                   className="bg-linear-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${((currentQuestionIndex + 1) / (quizData.length + 1)) * 100}%` }}
+                  style={{ width: quizData ? `${((currentQuestionIndex + 1) / (quizData.length + 1)) * 100}%` : '0%' }}
                 ></div>
               </div>
             </div>
 
             {/* Question display */}
             <div className="mb-6">
-              {currentQuestionIndex < quizData.length ?
+              {quizData && currentQuestionIndex < quizData.length ?
                 <QuestionContext.Provider value={{ setCorrectCount, setAnswered }}>
                   <Question key={quizData[currentQuestionIndex].questionText} {...quizData[currentQuestionIndex]} />
                 </QuestionContext.Provider>
@@ -553,6 +558,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             </div>
 
             {/* Navigation buttons */}
+            
             <div className="sticky bottom-0 flex justify-center gap-3 bg-white/80 backdrop-blur-sm p-4 rounded-xl shadow-lg border border-white/20 mt-6">
               <button
                 onClick={() => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))}
@@ -563,11 +569,11 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
               </button>
 
               <button
-                onClick={() => setCurrentQuestionIndex(Math.min(quizData.length, currentQuestionIndex + 1))}
-                disabled={currentQuestionIndex > quizData.length - 1}
+                onClick={() => quizData && setCurrentQuestionIndex(Math.min(quizData.length, currentQuestionIndex + 1))}
+                disabled={!quizData || currentQuestionIndex > quizData.length - 1}
                 className="px-6 py-3 bg-linear-to-r from-blue-500 to-purple-500 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:from-blue-600 hover:to-purple-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none text-base"
               >
-                {currentQuestionIndex !== quizData.length - 1 ?
+                {quizData && currentQuestionIndex !== quizData.length - 1 ?
                   <div> Next → </div> :
                   <div> Summary → </div>
                 }
@@ -575,7 +581,7 @@ MAKE SURE THE QUESTIONS ARE RELATING TO THESE
             </div>
 
             {/* PDF Download Options */}
-            {currentQuestionIndex === quizData.length && (
+            {quizData && currentQuestionIndex === quizData.length && (
               <div className="mt-6 space-y-4">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center flex items-center justify-center gap-2">
                   <span className="text-xl">📄</span>

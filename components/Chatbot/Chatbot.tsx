@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { SendHorizonal, Globe, Plus, Mic, Brain } from "lucide-react"
 import SelectChatbot from "./SelectChatbot"
 import puter from "@heyputer/puter.js"
 import { MarkdownContent } from "../ui/markdown"
+import { usePathname } from "next/navigation"
 
 export default function Chatbot({ sources, linkSources }: { sources: string[], linkSources: string[] }) {
   const [messages, setMessages] = useState<{ role: string, content: string }[]>([])
@@ -14,6 +15,61 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
   const [thinking, setThinking] = useState<string>("")
   // Web search
   const [search, setSearch] = useState<boolean>(false)
+  // Initial messages for fetching 
+  const [initialMessages, setInitialMessages] = useState<{ role: string, content: string }[]>([])
+
+  const pathname = usePathname()
+  const notebookId = pathname?.split("/").pop() // Last part of url
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const response = await fetch(`/api/chatmessages?notebookId=${notebookId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        if (!response.ok) {
+          throw new Error("Failed to get chat messages")
+        }
+        const data = await response.json()
+        // FIX: data contains database user id and notebook id, we need to access the messages array
+        // Fix the backend for that 
+        console.log("Initial messages:", data)
+        if (data && data[0]) {
+          // List of messages 
+          setInitialMessages(data[0].content)
+        } else {
+          setInitialMessages([])
+        }
+      } catch (error) {
+        console.error("Error getting chat messages:", error)
+      }
+    }
+    getMessages()
+  }, [notebookId])
+  console.log(initialMessages)
+
+  const saveChatMessage = async (message: { role: string, content: string }) => {
+    try {
+      const response = await fetch(`/api/chatmessages?notebookId=${notebookId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          role: message.role,
+          content: message.content,
+        }),
+      })
+      if (!response.ok) {
+        throw new Error("Failed to save chat message")
+      }
+    } catch (error) {
+      console.error("Error saving chat message:", error)
+    }
+  }
+
   // System prompt and stuff 
   let systemPrompt = `
   You are a tutor who analyzes sources to simplify complex topics. 
@@ -34,6 +90,7 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
     setLoading(true)
     // Request 
     try {
+      await saveChatMessage({ role: "user", content: input })
       const reply = await puter.ai.chat([
         {
           role: "system",
@@ -72,6 +129,7 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
         }
         )
       }
+      await saveChatMessage({ role: "assistant", content })
     } catch (error) {
       console.error("Chat error:", error)
       setMessages(prev => [...prev, {
@@ -80,6 +138,7 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
       }])
     } finally {
       setLoading(false)
+
     }
   }
 
@@ -90,13 +149,14 @@ export default function Chatbot({ sources, linkSources }: { sources: string[], l
       </div>
 
       <div className="flex-1 overflow-y-auto mb-4 space-y-3 p-4 bg-white rounded-xl border border-gray-200">
-        {messages.length === 0 ? (
+        {initialMessages.length === 0 && messages.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
             <p className="text-lg">Start a conversation!</p>
             <p className="text-sm mt-2">Ask me anything about your sources.</p>
           </div>
         ) : (
-          messages.map((message, index) => (
+          // Making sure to merge initialMessages and messages 
+          [...initialMessages, ...messages].map((message, index) => (
             <div
               key={index}
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
